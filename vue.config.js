@@ -1,0 +1,19 @@
+module.exports = {
+  // publicPath: '/weiadm/'
+   // baseUrl: './',
+    assetsDir: 'static',
+    productionSourceMap: false,
+    // devServer: {
+    //     proxy: {
+    //         '/api':{
+    //             target:'http://jsonplaceholder.typicode.com',
+    //             changeOrigin:true,
+    //             pathRewrite:{
+    //                 '/api':''
+    //             }
+    //         }
+    //     }
+    // }
+  lintOnSave: false
+
+}
