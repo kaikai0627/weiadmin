@@ -39,6 +39,18 @@ let routes = [{
                 meta: { title: '模板设置' }
             },
             {
+                path: '/test',
+                component: () =>
+                    import ('@/views/template/test.vue'),
+                meta: { title: '测试' }
+            },
+            {
+                path: '/test2',
+                component: () =>
+                    import ('@/views/template/test2.vue'),
+                meta: { title: '测试2' }
+            },
+            {
                 path: '/404',
                 component: () =>
                     import ('@/views/error-page/404.vue'),

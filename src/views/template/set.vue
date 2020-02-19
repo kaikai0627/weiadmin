@@ -1,455 +1,855 @@
 <template>
     <el-card class="box-card">
-        <form action=""></form>
-        <div class="phone">
+        <div
+            class="phone"
+            :style="{ backgroundColor: pageTemplate.backgroundColor }"
+        >
+            <!-- 头部 -->
             <el-popover placement="right" width="600" trigger="click">
+                <!-- 头部设置 -->
                 <div class="bg-light">
                     <div class="card">
                         <div class="card-header">
-                            图片广告
+                            页面设置
                         </div>
                         <div class="card-body bg-light">
-                            <blockquote
-                                class="blockquote mb-0"
-                                style="font-size: 13px"
-                            >
-                                <el-row>
-                                    <el-col :span="3">
-                                        选择模板:
-                                    </el-col>
-                                    <el-col :span="21">
-                                        <el-row :gutter="10">
-                                            <el-col :span="8">
-                                                <div
-                                                    class="text-center border bg-white p-1"
-                                                    :class="
-                                                        bannerType == 1
-                                                            ? 'border-primary'
-                                                            : ''
-                                                    "
-                                                    style="height: 100px;"
-                                                    @click="selectTemplate('1')"
-                                                >
-                                                    <div
-                                                        class="bg-info h-75 mb-1"
-                                                    ></div>
-                                                    轮播海报
-                                                </div>
-                                            </el-col>
-                                            <el-col :span="8">
-                                                <div
-                                                    class="text-center border bg-white p-1"
-                                                    :class="
-                                                        bannerType == 2
-                                                            ? 'border-primary'
-                                                            : ''
-                                                    "
-                                                    style="height: 100px;"
-                                                    @click="selectTemplate('2')"
-                                                >
-                                                    <div
-                                                        class="bg-info h-75 mb-1"
-                                                    ></div>
-                                                    视频
-                                                </div>
-                                            </el-col>
-                                        </el-row>
-                                    </el-col>
-                                </el-row>
-                                <div v-if="bannerType == 1">
-                                    <el-row>
-                                        <el-col :span="3" class="mb-2 mt-2">
-                                            选择模板:
-                                        </el-col>
-                                        <el-col :span="21"> </el-col>
-                                    </el-row>
-                                    <div v-if="imageUrl.length > 0">
-                                        <el-card
-                                            shadow="never"
-                                            class="text-center mb-2 p-2"
-                                            v-for="(item, index) in imageUrl"
-                                            :key="index"
+                            <el-form ref="form" label-width="120px">
+                                <el-form-item label="页面名称" class="mb-0">
+                                    <el-input
+                                        size="small"
+                                        v-model="pageTemplate.title"
+                                    ></el-input>
+                                </el-form-item>
+                                <el-form-item label="页面描述" class="mb-0">
+                                    <el-input
+                                        size="small"
+                                        v-model="pageTemplate.describe"
+                                    ></el-input>
+                                </el-form-item>
+                                <el-form-item label="背景颜色" class="mb-0">
+                                    <el-color-picker
+                                        v-model="pageTemplate.backgroundColor"
+                                        show-alpha
+                                        :predefine="predefineColors"
+                                    >
+                                    </el-color-picker>
+                                </el-form-item>
+                            </el-form>
+                        </div>
+                    </div>
+                </div>
+                <!-- 头部展示 -->
+                <div class="block page" slot="reference">
+                    <div class="page-title">{{ pageTemplate.title }}</div>
+                    <img
+                        src="../../assets/images/wx-hd.png"
+                        alt=""
+                        width="373"
+                    />
+                </div>
+            </el-popover>
+            <draggable
+                :list="moduleList"
+                :options="{animation: 150 }"
+                :no-transition-on-drag="true"
+                @change="change"
+                @start="start"
+                @end="end"
+                :move="move"
+            >
+                <transition-group type="transition" :css="true">
+                    <div v-for="(item, index) in moduleList" :key="index">
+                        <!-- 图片广告 -->
+                        <el-popover
+                            placement="right"
+                            width="600"
+                            trigger="click"
+                            v-if="item.controlName == 'ImageAd'"
+                        >
+                            <div class="bg-light">
+                                <div class="card">
+                                    <div class="card-header">
+                                        图片广告
+                                    </div>
+                                    <div class="card-body bg-light">
+                                        <blockquote
+                                            class="blockquote mb-0"
+                                            style="font-size: 13px"
                                         >
-                                            <el-row
-                                                class="d-flex align-items-center"
-                                            >
-                                                <el-col
-                                                    :span="6"
-                                                    class="mb-2 mt-2"
-                                                >
-                                                    <div class="img-preview">
-                                                        <img
-                                                            :src="item"
-                                                            class="avatar border"
-                                                        />
-                                                        <el-upload
-                                                            action="https://jsonplaceholder.typicode.com/posts/"
-                                                            :show-file-list="
-                                                                false
-                                                            "
-                                                            :before-upload="
-                                                                beforeAvatarUpload
-                                                            "
-                                                            class="replace-img"
-                                                        >
-                                                            更换图片
-                                                        </el-upload>
-                                                    </div>
+                                            <el-row>
+                                                <el-col :span="3">
+                                                    选择模板:
                                                 </el-col>
-                                                <el-col :span="18">
-                                                    跳转路径：
-                                                    <el-select
-                                                        v-model="value[index]"
-                                                        placeholder="请选择"
-                                                    >
-                                                        <el-option
-                                                            v-for="item in options"
-                                                            :key="item.value"
-                                                            :label="item.label"
-                                                            :value="item.value"
-                                                        >
-                                                        </el-option>
-                                                    </el-select>
+                                                <el-col :span="21">
+                                                    <el-row :gutter="10">
+                                                        <el-col :span="8">
+                                                            <div
+                                                                class="text-center border bg-white p-1"
+                                                                :class="
+                                                                    item.bannerType ==
+                                                                    1
+                                                                        ? 'border-primary'
+                                                                        : ''
+                                                                "
+                                                                style="height: 100px;"
+                                                                @click="
+                                                                    selectTemplate(
+                                                                        '1'
+                                                                    )
+                                                                "
+                                                            >
+                                                                <div
+                                                                    class="bg-info h-75 mb-1"
+                                                                ></div>
+                                                                轮播海报
+                                                            </div>
+                                                        </el-col>
+                                                        <el-col :span="8">
+                                                            <div
+                                                                class="text-center border bg-white p-1"
+                                                                :class="
+                                                                    item.bannerType ==
+                                                                    2
+                                                                        ? 'border-primary'
+                                                                        : ''
+                                                                "
+                                                                style="height: 100px;"
+                                                                @click="
+                                                                    selectTemplate(
+                                                                        '2'
+                                                                    )
+                                                                "
+                                                            >
+                                                                <div
+                                                                    class="bg-info h-75 mb-1"
+                                                                ></div>
+                                                                视频
+                                                            </div>
+                                                        </el-col>
+                                                    </el-row>
                                                 </el-col>
                                             </el-row>
-                                        </el-card>
-                                    </div>
-                                    <el-upload
-                                        action="https://jsonplaceholder.typicode.com/posts/"
-                                        :show-file-list="false"
-                                        :on-success="handleAvatarSuccess"
-                                        :before-upload="beforeAvatarUpload"
-                                    >
-                                        <el-card
-                                            shadow="never"
-                                            class="text-center"
-                                            style="cursor: pointer"
-                                        >
-                                            <div class="text-primary">
-                                                添加一张背景图
+                                            <div v-if="item.bannerType == 1">
+                                                <el-row>
+                                                    <el-col
+                                                        :span="3"
+                                                        class="mb-2 mt-2"
+                                                    >
+                                                        选择模板:
+                                                    </el-col>
+                                                    <el-col :span="21">
+                                                    </el-col>
+                                                </el-row>
+                                                <div
+                                                    v-if="
+                                                        item.imageUrl.length > 0
+                                                    "
+                                                >
+                                                    <el-card
+                                                        shadow="never"
+                                                        class="text-center mb-2 p-2"
+                                                        v-for="(item,
+                                                        i) in item.imageUrl"
+                                                        :key="i"
+                                                    >
+                                                        <el-row
+                                                            class="d-flex align-items-center"
+                                                        >
+                                                            <el-col
+                                                                :span="6"
+                                                                class="mb-2 mt-2"
+                                                            >
+                                                                <div
+                                                                    class="img-preview"
+                                                                >
+                                                                    <img
+                                                                        :src="
+                                                                            item
+                                                                        "
+                                                                        class="avatar border"
+                                                                    />
+                                                                    <el-upload
+                                                                        action="https://jsonplaceholder.typicode.com/posts/"
+                                                                        :show-file-list="
+                                                                            false
+                                                                        "
+                                                                        :before-upload="
+                                                                            beforeAvatarUpload
+                                                                        "
+                                                                        class="replace-img"
+                                                                    >
+                                                                        更换图片
+                                                                    </el-upload>
+                                                                </div>
+                                                            </el-col>
+                                                            <el-col :span="18">
+                                                                跳转路径：
+                                                                <el-select
+                                                                    v-model="
+                                                                        item
+                                                                            .value[
+                                                                            item
+                                                                                .index
+                                                                        ]
+                                                                    "
+                                                                    placeholder="请选择"
+                                                                >
+                                                                    <el-option
+                                                                        v-for="item in item.options"
+                                                                        :key="
+                                                                            item.value
+                                                                        "
+                                                                        :label="
+                                                                            item.label
+                                                                        "
+                                                                        :value="
+                                                                            item.value
+                                                                        "
+                                                                    >
+                                                                    </el-option>
+                                                                </el-select>
+                                                            </el-col>
+                                                        </el-row>
+                                                    </el-card>
+                                                </div>
+                                                <el-upload
+                                                    action="https://jsonplaceholder.typicode.com/posts/"
+                                                    :show-file-list="false"
+                                                    :on-success="
+                                                        handleAvatarSuccess
+                                                    "
+                                                    :before-upload="
+                                                        beforeAvatarUpload
+                                                    "
+                                                >
+                                                    <el-card
+                                                        shadow="never"
+                                                        class="text-center"
+                                                        style="cursor: pointer"
+                                                    >
+                                                        <div
+                                                            class="text-primary"
+                                                        >
+                                                            添加一张背景图
+                                                        </div>
+                                                        <div
+                                                            class="text-black-50"
+                                                        >
+                                                            建议尺寸750*350像素
+                                                        </div>
+                                                    </el-card>
+                                                </el-upload>
                                             </div>
-                                            <div class="text-black-50">
-                                                建议尺寸750*350像素
+                                            <div
+                                                v-else-if="item.bannerType == 2"
+                                                class="mt-2"
+                                            >
+                                                <el-row>
+                                                    <el-col
+                                                        :span="3"
+                                                        class="mb-2 mt-2"
+                                                    >
+                                                        视频链接:
+                                                    </el-col>
+                                                    <el-col :span="21">
+                                                        <el-input
+                                                            size="small"
+                                                            v-model="item.link"
+                                                        ></el-input>
+                                                    </el-col>
+                                                </el-row>
                                             </div>
-                                        </el-card>
-                                    </el-upload>
-                                </div>
-                            </blockquote>
-                        </div>
-                    </div>
-                </div>
-                <div class="block" slot="reference">
-                    <el-carousel
-                        trigger="click"
-                        arrow="never"
-                        height="150px"
-                        v-if="imageUrl.length > 0"
-                    >
-                        <el-carousel-item v-for="item in imageUrl" :key="item">
-                            <img :src="item" alt="" class="banner-img" />
-                        </el-carousel-item>
-                    </el-carousel>
-                    <el-carousel
-                        trigger="click"
-                        arrow="never"
-                        height="150px"
-                        v-else
-                    >
-                        <el-carousel-item v-for="item in 4" :key="item">
-                            <h3 class="small">{{ item }}</h3>
-                        </el-carousel-item>
-                    </el-carousel>
-                </div>
-            </el-popover>
-            <!-- 标题 -->
-            <el-popover placement="right" width="600" trigger="click">
-                <!-- 标题设置 -->
-                <div class="bg-light">
-                    <div class="card">
-                        <div class="card-header">
-                            标题
-                        </div>
-                        <div class="card-body bg-light">
-                            <el-form ref="form" label-width="120px">
-                                <el-form-item label="标题名" class="mb-0">
-                                    <el-input
-                                        size="small"
-                                        v-model="titleTemplate.lordTitle"
-                                    ></el-input>
-                                </el-form-item>
-                                <el-form-item label="文本样式" class="mb-0">
-                                    <el-radio-group
-                                        @change="radioDame"
-                                        v-model="titleTemplate.fontWeight"
-                                    >
-                                        <el-radio label="常规体"></el-radio>
-                                        <el-radio label="加粗体"></el-radio>
-                                    </el-radio-group>
-                                </el-form-item>
-                                <el-form-item label="主标题字体色" class="mb-0">
-                                    <el-color-picker
-                                        v-model="titleTemplate.lordColor"
-                                        show-alpha
-                                        :predefine="predefineColors"
-                                    >
-                                    </el-color-picker>
-                                </el-form-item>
-                                <el-form-item label="显示位置" class="mb-0">
-                                    <el-radio-group
-                                        v-model="titleTemplate.location"
-                                    >
-                                        <el-radio label="居左显示"></el-radio>
-                                        <el-radio label="居中显示"></el-radio>
-                                        <el-radio label="居右显示"></el-radio>
-                                    </el-radio-group>
-                                </el-form-item>
-                                <el-form-item label="副标题" class="mb-0">
-                                    <el-input
-                                        size="small"
-                                        v-model="titleTemplate.viceTitle"
-                                    ></el-input>
-                                </el-form-item>
-                                <el-form-item label="副标题字体色" class="mb-0">
-                                    <el-color-picker
-                                        v-model="titleTemplate.viceColor"
-                                        show-alpha
-                                        :predefine="predefineColors"
-                                    >
-                                    </el-color-picker>
-                                </el-form-item>
-                                <el-form-item label="背景色" class="mb-0">
-                                    <el-color-picker
-                                        v-model="titleTemplate.backgroundColor"
-                                        show-alpha
-                                        :predefine="predefineColors"
-                                    >
-                                    </el-color-picker>
-                                </el-form-item>
-                                <el-form-item label="外边距" class="mb-0">
-                                    <el-slider
-                                        v-model="titleTemplate.marginTop"
-                                    ></el-slider>
-                                </el-form-item>
-                            </el-form>
-                        </div>
-                    </div>
-                </div>
-                <!-- 标题展示 -->
-                <div
-                    class="block headline"
-                    slot="reference"
-                    :class="
-                        titleTemplate.location == '居左显示'
-                            ? 'text-left'
-                            : titleTemplate.location == '居中显示'
-                            ? 'text-center'
-                            : 'text-right'
-                    "
-                    :style="{
-                        marginTop: titleTemplate.marginTop + 'px',
-                        backgroundColor: titleTemplate.backgroundColor
-                    }"
-                >
-                    <div
-                        class="title-big"
-                        :style="{
-                            color: titleTemplate.lordColor,
-                            fontWeight:
-                                titleTemplate.fontWeight == '加粗体'
-                                    ? 'blod'
-                                    : 'normal'
-                        }"
-                    >
-                        {{ titleTemplate.lordTitle }}
-                    </div>
-                    <div
-                        class="title-small"
-                        :style="'color:' + titleTemplate.viceColor"
-                    >
-                        {{ titleTemplate.viceTitle }}
-                    </div>
-                </div>
-            </el-popover>
-            <!-- 商品列表 -->
-            <el-popover placement="right" width="600" trigger="click">
-                <!-- 商品设置 -->
-                <div class="bg-light">
-                    <div class="card">
-                        <div class="card-header">
-                            商品
-                        </div>
-                        <div class="card-body bg-light">
-                            <el-form ref="form" label-width="120px">
-                                <el-form-item label="列表样式" class="mb-0">
-                                    <el-radio-group
-                                        v-model="shopTemplate.listStyle"
-                                    >
-                                        <el-radio label="大图模式"></el-radio>
-                                        <el-radio label="一行两个"></el-radio>
-                                    </el-radio-group>
-                                </el-form-item>
-                                <el-form-item label="页面边距" class="mb-0">
-                                    <el-slider
-                                        v-model="shopTemplate.marginLeftRight"
-                                        :max="30"
-                                    ></el-slider>
-                                </el-form-item>
-                                <el-form-item label="上下边距" class="mb-0">
-                                    <el-slider
-                                        v-model="shopTemplate.marginTop"
-                                        :max="30"
-                                    ></el-slider>
-                                </el-form-item>
-                                <el-form-item label="列表样式" class="mb-0">
-                                    <el-radio-group
-                                        v-model="shopTemplate.imgScale"
-                                    >
-                                        <el-radio label="3_2">3:2</el-radio>
-                                        <el-radio label="default">1:1</el-radio>
-                                    </el-radio-group>
-                                </el-form-item>
-                            </el-form>
-                        </div>
-                    </div>
-                </div>
-                <!-- 商品展示 -->
-                <div class="block" slot="reference">
-                    <!-- 大图模式 -->
-                    <div
-                        :style="{
-                            margin: '0px ' + shopTemplate.marginLeftRight + 'px'
-                        }"
-                        class="commodity-list-style1" v-if="shopTemplate.listStyle == '大图模式'"
-                    >
-                        <div
-                            class="commodity-item"
-                            v-for="i in 2"
-                            :key="i"
-                            :style="{
-                                marginTop: shopTemplate.marginTop + 'px'
-                            }"
-                        >
-                            <div
-                                class="img-1_1"
-                                v-if="shopTemplate.imgScale == 'default'"
-                            >
-                                <img
-                                    src="https://img.yzcdn.cn/public_files/2018/01/30/585dae8447d80013ef9344adc973c6ee.png?imageView2%2F2%2Fw%2F520%2Fh%2F0%2Fq%2F75%2Fformat%2Fwebp"
-                                    mode=""
-                                />
-                            </div>
-                            <div
-                                class="img-3_2"
-                                v-else-if="shopTemplate.imgScale == '3_2'"
-                            >
-                                <img
-                                    src="https://img.yzcdn.cn/public_files/2018/01/30/585dae8447d80013ef9344adc973c6ee.png?imageView2%2F2%2Fw%2F520%2Fh%2F0%2Fq%2F75%2Fformat%2Fwebp"
-                                    mode=""
-                                />
-                            </div>
-                            <div class="commodity-title">
-                                这里显示商品名称，最多显示两行
-                            </div>
-                            <div class="commodity-foot">
-                                <div>
-                                    <span
-                                        class="text-danger mr-1"
-                                        style="font-size: 16px"
-                                        >¥99</span
-                                    >
-                                    <s
-                                        class="text-black-50 text-sm"
-                                        style="font-size: 12px"
-                                        >¥99</s
-                                    >
-                                </div>
-                                <el-button type="danger" size="mini"
-                                    >详情</el-button
-                                >
-                            </div>
-                        </div>
-                    </div>
-                    <div
-                        :style="{
-                            margin: '0px ' + shopTemplate.marginLeftRight + 'px'
-                        }"
-                        class="commodity-list-style2" v-else-if="shopTemplate.listStyle == '一行两个'"
-                    >
-                        <div
-                            class="commodity-item"
-                            v-for="i in 4"
-                            :key="i"
-                            :style="{
-                                marginTop: shopTemplate.marginTop + 'px'
-                            }"
-                        >
-                            <div
-                                class="img-1_1"
-                                v-if="shopTemplate.imgScale == 'default'"
-                            >
-                                <img
-                                    src="https://img.yzcdn.cn/public_files/2018/01/30/585dae8447d80013ef9344adc973c6ee.png?imageView2%2F2%2Fw%2F520%2Fh%2F0%2Fq%2F75%2Fformat%2Fwebp"
-                                    mode=""
-                                />
-                            </div>
-                            <div
-                                class="img-3_2"
-                                v-else-if="shopTemplate.imgScale == '3_2'"
-                            >
-                                <img
-                                    src="https://img.yzcdn.cn/public_files/2018/01/30/585dae8447d80013ef9344adc973c6ee.png?imageView2%2F2%2Fw%2F520%2Fh%2F0%2Fq%2F75%2Fformat%2Fwebp"
-                                    mode=""
-                                />
-                            </div>
-                            <div class="commodity-title">
-                                这里显示商品名称，最多显示两行
-                            </div>
-                            <div class="commodity-foot">
-                                <div>
-                                    <div class="price-content">
-                                        <s
-                                            class="text-black-50 text-sm"
-                                            style="font-size: 12px"
-                                            >¥99</s
-                                        >
+                                        </blockquote>
                                     </div>
-                                    <span
-                                        class="text-danger mr-1"
-                                        style="font-size: 16px"
-                                        >¥99</span
-                                    >
                                 </div>
-                                <el-button type="danger" size="mini"
-                                    >详情</el-button
-                                >
                             </div>
-                        </div>
+                            <div
+                                class="block banner my-module"
+                                slot="reference"
+                                style="height: 155px"
+                            >
+                                <span
+                                    class="add-icon"
+                                    @click="AddModule('1', $event)"
+                                >
+                                    <img
+                                        src="../../assets/images/icon/icon_02.png"
+                                        alt=""
+                                    />
+                                </span>
+                                <span
+                                    class="del-icon"
+                                    @click="DelModule(index, $event)"
+                                >
+                                    <img
+                                        src="../../assets/images/icon/icon_01.png"
+                                        alt=""
+                                    />
+                                </span>
+                                <el-carousel
+                                    trigger="click"
+                                    arrow="never"
+                                    height="150px"
+                                    v-if="item.imageUrl.length > 0"
+                                >
+                                    <el-carousel-item
+                                        v-for="item in item.imageUrl"
+                                        :key="item"
+                                    >
+                                        <img
+                                            :src="item"
+                                            alt=""
+                                            class="banner-img"
+                                        />
+                                    </el-carousel-item>
+                                </el-carousel>
+                                <el-carousel
+                                    trigger="click"
+                                    arrow="never"
+                                    height="150px"
+                                    v-else
+                                >
+                                    <el-carousel-item
+                                        v-for="item in 4"
+                                        :key="'1' + item"
+                                    >
+                                        <h3 class="small">{{ item }}</h3>
+                                    </el-carousel-item>
+                                </el-carousel>
+                            </div>
+                        </el-popover>
+                        <!-- 图文导航 -->
+                        <el-popover
+                            placement="right"
+                            width="600"
+                            trigger="click"
+                            v-if="item.controlName == 'navigation'"
+                        >
+                            <!-- 图文导航设置 -->
+                            <div class="bg-light">
+                                <div class="card">
+                                    <div class="card-header">
+                                        图文导航
+                                    </div>
+                                    <div class="card-body bg-light">
+                                        <el-form ref="form" label-width="120px">
+                                            <el-form-item
+                                                label="上间距"
+                                                class="mb-0"
+                                            >
+                                                <el-slider
+                                                    v-model="item.marginTop"
+                                                ></el-slider>
+                                            </el-form-item>
+                                            <el-form-item
+                                                label="左右间距"
+                                                class="mb-0"
+                                            >
+                                                <el-slider
+                                                    v-model="
+                                                        item.marginLeftRight
+                                                    "
+                                                ></el-slider>
+                                            </el-form-item>
+                                            <el-form-item
+                                                label="背景色"
+                                                class="mb-0"
+                                            >
+                                                <el-color-picker
+                                                    v-model="
+                                                        item.backgroundColor
+                                                    "
+                                                    show-alpha
+                                                    :predefine="predefineColors"
+                                                >
+                                                </el-color-picker>
+                                            </el-form-item>
+                                        </el-form>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- 图文导航 -->
+                            <div
+                                class="block my-module"
+                                slot="reference"
+                                :style="{
+                                    backgroundColor: item.backgroundColor,
+                                    margin:
+                                        item.marginTop +
+                                        'px ' +
+                                        item.marginLeftRight +
+                                        'px 0',
+                                    height: 210 + 'px'
+                                }"
+                            >
+                                <span
+                                    class="add-icon"
+                                    @click="AddModule('2', $event)"
+                                >
+                                    <img
+                                        src="../../assets/images/icon/icon_02.png"
+                                        alt=""
+                                    />
+                                </span>
+                                <span
+                                    class="del-icon"
+                                    @click="DelModule(index, $event)"
+                                >
+                                    <img
+                                        src="../../assets/images/icon/icon_01.png"
+                                        alt=""
+                                    />
+                                </span>
+                                <el-carousel
+                                    trigger="click"
+                                    height="210px"
+                                    arrow="never"
+                                    :autoplay="false"
+                                >
+                                    <el-carousel-item v-for="i in 2" :key="i">
+                                        <div
+                                            class="type-item"
+                                            v-for="j in 8"
+                                            :key="j"
+                                        >
+                                            <img
+                                                src="../../assets/images/default.png"
+                                            />
+                                            <span>图文导航</span>
+                                        </div>
+                                    </el-carousel-item>
+                                </el-carousel>
+                            </div>
+                        </el-popover>
+                        <!-- 标题 -->
+                        <el-popover
+                            placement="right"
+                            width="600"
+                            trigger="click"
+                            v-if="item.controlName == 'TitleLable'"
+                        >
+                            <!-- 标题设置 -->
+                            <div class="bg-light">
+                                <div class="card">
+                                    <div class="card-header">
+                                        标题
+                                    </div>
+                                    <div class="card-body bg-light">
+                                        <el-form ref="form" label-width="120px">
+                                            <el-form-item
+                                                label="标题名"
+                                                class="mb-0"
+                                            >
+                                                <el-input
+                                                    size="small"
+                                                    v-model="item.lordTitle"
+                                                ></el-input>
+                                            </el-form-item>
+                                            <el-form-item
+                                                label="文本样式"
+                                                class="mb-0"
+                                            >
+                                                <el-radio-group
+                                                    @change="radioDame"
+                                                    v-model="item.fontWeight"
+                                                >
+                                                    <el-radio
+                                                        label="常规体"
+                                                    ></el-radio>
+                                                    <el-radio
+                                                        label="加粗体"
+                                                    ></el-radio>
+                                                </el-radio-group>
+                                            </el-form-item>
+                                            <el-form-item
+                                                label="主标题字体色"
+                                                class="mb-0"
+                                            >
+                                                <el-color-picker
+                                                    v-model="item.lordColor"
+                                                    show-alpha
+                                                    :predefine="predefineColors"
+                                                >
+                                                </el-color-picker>
+                                            </el-form-item>
+                                            <el-form-item
+                                                label="显示位置"
+                                                class="mb-0"
+                                            >
+                                                <el-radio-group
+                                                    v-model="item.location"
+                                                >
+                                                    <el-radio
+                                                        label="居左显示"
+                                                    ></el-radio>
+                                                    <el-radio
+                                                        label="居中显示"
+                                                    ></el-radio>
+                                                    <el-radio
+                                                        label="居右显示"
+                                                    ></el-radio>
+                                                </el-radio-group>
+                                            </el-form-item>
+                                            <el-form-item
+                                                label="副标题"
+                                                class="mb-0"
+                                            >
+                                                <el-input
+                                                    size="small"
+                                                    v-model="item.viceTitle"
+                                                ></el-input>
+                                            </el-form-item>
+                                            <el-form-item
+                                                label="副标题字体色"
+                                                class="mb-0"
+                                            >
+                                                <el-color-picker
+                                                    v-model="item.viceColor"
+                                                    show-alpha
+                                                    :predefine="predefineColors"
+                                                >
+                                                </el-color-picker>
+                                            </el-form-item>
+                                            <el-form-item
+                                                label="背景色"
+                                                class="mb-0"
+                                            >
+                                                <el-color-picker
+                                                    v-model="
+                                                        item.backgroundColor
+                                                    "
+                                                    show-alpha
+                                                    :predefine="predefineColors"
+                                                >
+                                                </el-color-picker>
+                                            </el-form-item>
+                                            <el-form-item
+                                                label="外边距"
+                                                class="mb-0"
+                                            >
+                                                <el-slider
+                                                    v-model="item.marginTop"
+                                                ></el-slider>
+                                            </el-form-item>
+                                        </el-form>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- 标题展示 -->
+                            <div
+                                class="block headline my-module"
+                                slot="reference"
+                                :class="
+                                    item.location == '居左显示'
+                                        ? 'text-left'
+                                        : item.location == '居中显示'
+                                        ? 'text-center'
+                                        : 'text-right'
+                                "
+                                :style="{
+                                    marginTop: item.marginTop + 'px',
+                                    backgroundColor: item.backgroundColor,
+                                    height: 65 + 'px'
+                                }"
+                            >
+                                <span
+                                    class="add-icon"
+                                    @click="AddModule('3', $event)"
+                                >
+                                    <img
+                                        src="../../assets/images/icon/icon_02.png"
+                                        alt=""
+                                    />
+                                </span>
+                                <span
+                                    class="del-icon"
+                                    @click="DelModule(index, $event)"
+                                >
+                                    <img
+                                        src="../../assets/images/icon/icon_01.png"
+                                        alt=""
+                                    />
+                                </span>
+                                <div
+                                    class="title-big"
+                                    :style="{
+                                        color: item.lordColor,
+                                        fontWeight:
+                                            item.fontWeight == '加粗体'
+                                                ? 'blod'
+                                                : 'normal'
+                                    }"
+                                >
+                                    {{ item.lordTitle }}
+                                </div>
+                                <div
+                                    class="title-small"
+                                    :style="'color:' + item.viceColor"
+                                >
+                                    {{ item.viceTitle }}
+                                </div>
+                            </div>
+                        </el-popover>
+                        <!-- 商品列表 -->
+                        <el-popover
+                            placement="right"
+                            width="600"
+                            trigger="click"
+                            v-if="item.controlName == 'ProductAd'"
+                        >
+                            <!-- 商品设置 -->
+                            <div class="bg-light">
+                                <div class="card">
+                                    <div class="card-header">
+                                        商品
+                                    </div>
+                                    <div class="card-body bg-light">
+                                        <el-form ref="form" label-width="120px">
+                                            <el-form-item
+                                                label="列表样式"
+                                                class="mb-0"
+                                            >
+                                                <el-radio-group
+                                                    v-model="item.listStyle"
+                                                >
+                                                    <el-radio
+                                                        label="大图模式"
+                                                    ></el-radio>
+                                                    <el-radio
+                                                        label="一行两个"
+                                                    ></el-radio>
+                                                </el-radio-group>
+                                            </el-form-item>
+                                            <el-form-item
+                                                label="页面边距"
+                                                class="mb-0"
+                                            >
+                                                <el-slider
+                                                    v-model="
+                                                        item.marginLeftRight
+                                                    "
+                                                    :max="30"
+                                                ></el-slider>
+                                            </el-form-item>
+                                            <el-form-item
+                                                label="上下边距"
+                                                class="mb-0"
+                                            >
+                                                <el-slider
+                                                    v-model="item.marginTop"
+                                                    :max="30"
+                                                ></el-slider>
+                                            </el-form-item>
+                                            <el-form-item
+                                                label="图片比例"
+                                                class="mb-0"
+                                            >
+                                                <el-radio-group
+                                                    v-model="item.imgScale"
+                                                >
+                                                    <el-radio label="3_2"
+                                                        >3:2</el-radio
+                                                    >
+                                                    <el-radio label="default"
+                                                        >1:1</el-radio
+                                                    >
+                                                </el-radio-group>
+                                            </el-form-item>
+                                        </el-form>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- 商品展示 -->
+                            <div
+                                class="block my-module"
+                                slot="reference"
+                                :style="{
+                                    height:
+                                        item.listStyle == '大图模式' &&
+                                        item.imgScale == 'default'
+                                            ? 465 + 'px'
+                                            : item.listStyle == '大图模式' &&
+                                              item.imgScale == '3_2'
+                                            ? 355 + 'px'
+                                            : item.listStyle == '一行两个' &&
+                                              item.imgScale == 'default'
+                                            ? 279 + 'px'
+                                            : item.listStyle == '一行两个' &&
+                                              item.imgScale == '3_2'
+                                            ? 230 + 'px'
+                                            : ''
+                                }"
+                            >
+                                <span
+                                    class="add-icon"
+                                    @click="AddModule('4', $event)"
+                                >
+                                    <img
+                                        src="../../assets/images/icon/icon_02.png"
+                                        alt=""
+                                    />
+                                </span>
+                                <span
+                                    class="del-icon"
+                                    @click="DelModule(index, $event)"
+                                >
+                                    <img
+                                        src="../../assets/images/icon/icon_01.png"
+                                        alt=""
+                                    />
+                                </span>
+                                <!-- 大图模式 -->
+                                <div
+                                    :style="{
+                                        margin:
+                                            '0px ' + item.marginLeftRight + 'px'
+                                    }"
+                                    class="commodity-list-style1"
+                                    v-if="item.listStyle == '大图模式'"
+                                >
+                                    <div
+                                        class="commodity-item"
+                                        v-for="i in 1"
+                                        :key="i"
+                                        :style="{
+                                            marginTop: item.marginTop + 'px'
+                                        }"
+                                    >
+                                        <div
+                                            class="img-1_1"
+                                            v-if="item.imgScale == 'default'"
+                                        >
+                                            <img
+                                                src="../../assets/images/default.png"
+                                                mode=""
+                                            />
+                                        </div>
+                                        <div
+                                            class="img-3_2"
+                                            v-else-if="item.imgScale == '3_2'"
+                                        >
+                                            <img
+                                                src="../../assets/images/default.png"
+                                                mode=""
+                                            />
+                                        </div>
+                                        <div class="commodity-title">
+                                            这里显示商品名称，最多显示两行
+                                        </div>
+                                        <div class="commodity-foot">
+                                            <div>
+                                                <span
+                                                    class="text-danger mr-1"
+                                                    style="font-size: 16px"
+                                                    >¥99</span
+                                                >
+                                                <s
+                                                    class="text-black-50 text-sm"
+                                                    style="font-size: 12px"
+                                                    >¥99</s
+                                                >
+                                            </div>
+                                            <el-button type="danger" size="mini"
+                                                >详情</el-button
+                                            >
+                                        </div>
+                                    </div>
+                                </div>
+                                <div
+                                    :style="{
+                                        margin:
+                                            '0px ' +
+                                            item.marginLeftRight +
+                                            'px',
+                                        minHeight: 225 + 'px'
+                                    }"
+                                    class="commodity-list-style2"
+                                    v-else-if="item.listStyle == '一行两个'"
+                                >
+                                    <div
+                                        class="commodity-item"
+                                        v-for="i in 2"
+                                        :key="i"
+                                        :style="{
+                                            marginTop: item.marginTop + 'px'
+                                        }"
+                                    >
+                                        <div
+                                            class="img-1_1"
+                                            v-if="item.imgScale == 'default'"
+                                        >
+                                            <img
+                                                src="../../assets/images/default.png"
+                                                mode=""
+                                            />
+                                        </div>
+                                        <div
+                                            class="img-3_2"
+                                            v-else-if="item.imgScale == '3_2'"
+                                        >
+                                            <img
+                                                src="../../assets/images/default.png"
+                                                mode=""
+                                            />
+                                        </div>
+                                        <div class="commodity-title">
+                                            这里显示商品名称，最多显示两行
+                                        </div>
+                                        <div class="commodity-foot">
+                                            <div>
+                                                <div class="price-content">
+                                                    <s
+                                                        class="text-black-50 text-sm"
+                                                        style="font-size: 12px"
+                                                        >¥99</s
+                                                    >
+                                                </div>
+                                                <span
+                                                    class="text-danger mr-1"
+                                                    style="font-size: 16px"
+                                                    >¥99</span
+                                                >
+                                            </div>
+                                            <el-button type="danger" size="mini"
+                                                >详情</el-button
+                                            >
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </el-popover>
                     </div>
+                </transition-group>
+            </draggable>
+            <div class="bg-white mt-2">
+                <div class="module-title">
+                    点击添加组件
                 </div>
-            </el-popover>
+                <div class="p-2">
+                    <el-button size="small" @click="AddModule('1', $event)"
+                        >图文广告</el-button
+                    >
+                    <el-button size="small" @click="AddModule('2', $event)"
+                        >图文导航</el-button
+                    >
+                    <el-button size="small" @click="AddModule('3', $event)"
+                        >标题</el-button
+                    >
+                    <el-button size="small" @click="AddModule('4', $event)"
+                        >商品</el-button
+                    >
+                </div>
+            </div>
         </div>
     </el-card>
 </template>
 
 <script>
+import draggable from "vuedraggable";
 export default {
     name: "",
     data() {
         return {
-            bannerType: "1",
-            imageUrl: [],
-            options: [
-                {
-                    value: "选项1",
-                    label: "黄金糕"
-                },
-                {
-                    value: "选项2",
-                    label: "双皮奶"
-                }
-            ],
-            value: [],
-            index: 1,
             predefineColors: [
                 "#ffffff",
                 "#F8F8F8",
@@ -465,28 +865,65 @@ export default {
                 "hsl(181, 100%, 37%)",
                 "hsla(209, 100%, 56%, 0.73)"
             ],
-            titleTemplate: {
-                color: "#F8F8F8",
-                lordTitle: "主标题",
-                lordColor: "#333333",
-                viceTitle: "副标题",
-                viceColor: "#999999",
-                location: "居中显示",
-                marginTop: 10,
-                fontWeight: "加粗体"
+            pageTemplate: {
+                title: "购物商城",
+                describe: "",
+                backgroundColor: "#F8F8F8"
             },
-            shopTemplate: {
-                marginLeftRight: 0,
-                marginTop: 10,
-                imgScale: "default",
-                listStyle: "一行两个"
-            }
+            moduleList: [
+                {
+                    controlName: "ImageAd",
+                    bannerType: "1",
+                    imageUrl: [],
+                    options: [
+                        {
+                            value: "选项1",
+                            label: "黄金糕"
+                        },
+                        {
+                            value: "选项2",
+                            label: "双皮奶"
+                        }
+                    ],
+                    value: [],
+                    link: "",
+                    index: 1
+                },
+                {
+                    controlName: "TitleLable",
+                    backgroundColor: "#ffffff",
+                    lordTitle: "主标题",
+                    lordColor: "#333333",
+                    viceTitle: "副标题",
+                    viceColor: "#999999",
+                    location: "居中显示",
+                    marginTop: 10,
+                    fontWeight: "加粗体"
+                },
+                {
+                    controlName: "navigation",
+                    marginLeftRight: 0,
+                    marginTop: 10,
+                    backgroundColor: "#ffffff"
+                },
+                {
+                    controlName: "ProductAd",
+                    marginLeftRight: 0,
+                    marginTop: 10,
+                    imgScale: "default",
+                    listStyle: "一行两个"
+                }
+            ],
+            drag: null
         };
+    },
+    components: {
+        draggable
     },
     methods: {
         // 广告图片选择模板类型
         selectTemplate(tag) {
-            this.bannerType = tag;
+            this.item.bannerType = tag;
         },
         // 图片上传
         handleAvatarSuccess(res, file) {
@@ -502,6 +939,107 @@ export default {
         },
         radioDame(e) {
             console.log(e, this.titleTemplate.fontWeight);
+        },
+        // 添加组件
+        AddModule(tag, e) {
+            e.stopPropagation();
+            if (tag == 1) {
+                this.moduleList.push({
+                    controlName: "ImageAd",
+                    bannerType: "1",
+                    imageUrl: [],
+                    options: [
+                        {
+                            value: "选项1",
+                            label: "黄金糕"
+                        },
+                        {
+                            value: "选项2",
+                            label: "双皮奶"
+                        }
+                    ],
+                    value: [],
+                    link: "",
+                    index: 1
+                });
+            } else if (tag == 2) {
+                this.moduleList.push({
+                    controlName: "navigation",
+                    marginLeftRight: 0,
+                    marginTop: 10,
+                    backgroundColor: "#ffffff"
+                });
+            } else if (tag == 3) {
+                this.moduleList.push({
+                    controlName: "TitleLable",
+                    backgroundColor: "#ffffff",
+                    lordTitle: "主标题",
+                    lordColor: "#333333",
+                    viceTitle: "副标题",
+                    viceColor: "#999999",
+                    location: "居中显示",
+                    marginTop: 10,
+                    fontWeight: "加粗体"
+                });
+            } else if (tag == 4) {
+                this.moduleList.push({
+                    controlName: "ProductAd",
+                    marginLeftRight: 0,
+                    marginTop: 10,
+                    imgScale: "default",
+                    listStyle: "一行两个"
+                });
+            } else {
+                return;
+            }
+            this.$message({
+                type: "success",
+                message: "添加成功!"
+            });
+        },
+        // 删除组件
+        DelModule(id, e) {
+            e.stopPropagation();
+            this.$confirm("确认删除当前组件?", "提示", {
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+                type: "warning"
+            })
+                .then(() => {
+                    this.moduleList.splice(id, 1);
+                    this.$message({
+                        type: "success",
+                        message: "删除成功!"
+                    });
+                })
+                .catch(() => {
+                    this.$message({
+                        type: "info",
+                        message: "已取消删除"
+                    });
+                });
+        },
+        //evt里面有两个值，一个evt.added 和evt.removed  可以分别知道移动元素的ID和删除元素的ID
+        change(evt) {
+            console.log(evt, "change...");
+        },
+        //start ,end ,add,update, sort, remove 得到的都差不多
+        start(evt) {
+            this.drag = true;
+            console.log(evt, "start...");
+        },
+        end(evt) {
+            console.log(evt, "end....");
+            this.drag = true;
+            evt.item; //可以知道拖动的本身
+            evt.to; // 可以知道拖动的目标列表
+            evt.from; // 可以知道之前的列表
+            evt.oldIndex; // 可以知道拖动前的位置
+            evt.newIndex; // 可以知道拖动后的位置
+        },
+        move(evt, originalEvent) {
+            console.log(evt, "move");
+            console.log(originalEvent); //鼠标位置
         }
     }
 };
@@ -520,27 +1058,89 @@ export default {
     font-size: 12px;
     border: none;
 }
+
+.el-carousel__button {
+    background-color: #000;
+}
 </style>
 
 <style scoped>
+.page {
+    position: relative;
+}
+
+.page-title {
+    position: absolute;
+    left: 50%;
+    bottom: 15px;
+    color: #040404;
+    font-weight: bold;
+    transform: translateX(-50%);
+}
+
+.module-title {
+    font-size: 13px;
+    padding: 10px 10px 0;
+}
+
 .phone {
     width: 375px;
     border: 1px solid #ccc;
+    /* display: flex;
+    flex-direction: column;
+    height: 600px;
+    overflow-y: auto;
+    overflow-x: hidden; */
 }
-.el-carousel__item h3 {
-    color: #475669;
+.banner .el-carousel__item h3 {
+    color: #181f29;
     font-size: 14px;
     opacity: 0.75;
     line-height: 150px;
     margin: 0;
 }
 
-.el-carousel__item:nth-child(2n) {
+.banner .el-carousel__item:nth-child(2n) {
     background-color: #99a9bf;
 }
 
-.el-carousel__item:nth-child(2n + 1) {
+.banner .el-carousel__item:nth-child(2n + 1) {
     background-color: #d3dce6;
+}
+
+.my-module {
+    width: 373px;
+    border: 1px solid transparent;
+    padding: 1px;
+    position: relative;
+    transition: all linear 0.3s;
+}
+.add-icon,
+.del-icon {
+    display: none;
+    position: absolute;
+    top: -13px;
+    z-index: 999;
+    cursor: pointer;
+}
+.add-icon img,
+.del-icon img {
+    width: 16px;
+    height: 16px;
+}
+.add-icon {
+    left: 50%;
+    margin-left: -8px;
+}
+.del-icon {
+    right: -8px;
+}
+.my-module:hover .add-icon,
+.my-module:hover .del-icon {
+    display: inline-block;
+}
+.my-module:hover {
+    border: 1px solid #409eff;
 }
 /* 图片上传 */
 .avatar-uploader {
@@ -629,7 +1229,7 @@ export default {
     padding: 5px 5px 0;
 }
 
-.commodity-item image {
+.commodity-item img {
     width: 100%;
 }
 
@@ -645,7 +1245,7 @@ export default {
     align-items: center;
 }
 
-.commodity-foot image {
+.commodity-foot img {
     width: 20px;
     height: 20px;
     align-items: center;
@@ -709,5 +1309,34 @@ export default {
     -ms-transform: translate(-50%, -50%);
     -o-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
+}
+/* 图文导航 */
+.type-content {
+    padding-bottom: 20px;
+}
+
+.type-list {
+    padding: 20px 0;
+    overflow: hidden;
+}
+
+.type-item {
+    width: 25%;
+    float: left;
+    text-align: center;
+    padding-top: 10px;
+    margin-bottom: 10px;
+}
+
+.type-item img {
+    display: block;
+    margin: 0 auto;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
+
+.type-item span {
+    font-size: 12px;
 }
 </style>
