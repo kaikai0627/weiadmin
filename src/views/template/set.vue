@@ -94,7 +94,7 @@
                                                                 style="height: 100px;"
                                                                 @click="
                                                                     selectTemplate(
-                                                                        '1'
+                                                                        index,'1'
                                                                     )
                                                                 "
                                                             >
@@ -116,7 +116,7 @@
                                                                 style="height: 100px;"
                                                                 @click="
                                                                     selectTemplate(
-                                                                        '2'
+                                                                        index,'2'
                                                                     )
                                                                 "
                                                             >
@@ -129,7 +129,7 @@
                                                     </el-row>
                                                 </el-col>
                                             </el-row>
-                                            <div v-if="item.bannerType == 1">
+                                            <!-- <div v-if="item.bannerType == 1">
                                                 <el-row>
                                                     <el-col
                                                         :span="3"
@@ -258,7 +258,7 @@
                                                         ></el-input>
                                                     </el-col>
                                                 </el-row>
-                                            </div>
+                                            </div> -->
                                         </blockquote>
                                     </div>
                                 </div>
@@ -286,36 +286,46 @@
                                         alt=""
                                     />
                                 </span>
-                                <el-carousel
-                                    trigger="click"
-                                    arrow="never"
-                                    height="150px"
-                                    v-if="item.imageUrl.length > 0"
-                                >
-                                    <el-carousel-item
-                                        v-for="item in item.imageUrl"
-                                        :key="item"
+                                <div v-if="item.bannerType == 1">
+                                    <el-carousel
+                                        trigger="click"
+                                        arrow="never"
+                                        height="150px"
+                                        v-if="item.imageUrl.length > 0"
                                     >
-                                        <img
-                                            :src="item"
-                                            alt=""
-                                            class="banner-img"
-                                        />
-                                    </el-carousel-item>
-                                </el-carousel>
-                                <el-carousel
-                                    trigger="click"
-                                    arrow="never"
-                                    height="150px"
-                                    v-else
-                                >
-                                    <el-carousel-item
-                                        v-for="item in 4"
-                                        :key="'1' + item"
+                                        <el-carousel-item
+                                            v-for="item in item.imageUrl"
+                                            :key="item"
+                                        >
+                                            <img
+                                                :src="item"
+                                                alt=""
+                                                class="banner-img"
+                                            />
+                                        </el-carousel-item>
+                                    </el-carousel>
+                                    <el-carousel
+                                        trigger="click"
+                                        arrow="never"
+                                        height="150px"
+                                        v-else
                                     >
-                                        <h3 class="small">{{ item }}</h3>
-                                    </el-carousel-item>
-                                </el-carousel>
+                                        <el-carousel-item
+                                            v-for="item in 4"
+                                            :key="'1' + item"
+                                        >
+                                            <h3 class="small">{{ item }}</h3>
+                                        </el-carousel-item>
+                                    </el-carousel>
+                                </div>
+                                <div v-else>
+                                    <video src="http://47.104.236.24:8089/jademp4/jade.mp4" 
+                                        width="100%"
+                                        height="150px"
+                                        controls preload="auto"   
+                                    >
+                                    </video>
+                                </div>
                             </div>
                         </el-popover>
                         <!-- 图文导航 -->
@@ -922,8 +932,8 @@ export default {
     },
     methods: {
         // 广告图片选择模板类型
-        selectTemplate(tag) {
-            this.item.bannerType = tag;
+        selectTemplate(index,tag) {
+            this.moduleList[index].bannerType = tag;
         },
         // 图片上传
         handleAvatarSuccess(res, file) {
