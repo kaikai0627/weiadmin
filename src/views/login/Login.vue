@@ -33,18 +33,18 @@ export default {
     data: function() {
         return {
             param: {
-                username: '',
-                password: '123456',
+                username: '00001',
+                password: '',
             },
             rules: {
                 username: [
                     { required: true, message: "请输入用户名", trigger: "blur" }, //非空验证 
                     { min: 4, max: 18, message: "长度在 4 到 18 个字符", trigger: "blur" } //长度验证
                     ],
-                password: [
-                    { required: true, message: "请输入密码", trigger: "blur" },
-                    { min: 4, max: 18, message: "长度在 4 到 18 个字符", trigger: "blur" }
-                    ]
+                // password: [
+                //     { required: true, message: "请输入密码", trigger: "blur" },
+                //     { min: 4, max: 18, message: "长度在 4 到 18 个字符", trigger: "blur" }
+                //     ]
             },
         };
     },
@@ -59,9 +59,11 @@ export default {
                     // 保留this
                     var that = this;
                     storekit.setLastLoginName(this.param.username);
-                    post("/account/sign-in", {
+                    post("/api/weiadm/sign/v1/sign-in", {
                             account: that.param.username,
-                            password: that.param.password
+                            password: that.param.password,
+                            loginType: 'h5pwd',
+                            openId: ''
                         }).then((res)=>{
                             //{status: 0, data: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1aWQiOiIxI…wMSJ9.dhqlHSazqkkrPCyuLW5YdGs8CJuxN7jBzm42oeHGGt4", code: 2, msg: "登录成功", timestamps: 1581391998247, …}
                             console.info("返回:")
@@ -77,8 +79,11 @@ export default {
                             //this.$message.success("登录成功");
                             this.$message({message: "登录成功",type: "success"});
                             // 保存token
-                            storekit.setToken(res.data)
+                            storekit.setToken(res.msg);
+                            storekit.setUserInfo(res.data);
                             //this.$store.commit("setToken", res.data);
+                            // 删除本地存储 当前激活菜单的 index
+                            localStorage.removeItem("navActive");
                             // 登录成功跳转到首页
                             this.$router.push('/');
                         }).catch(err=>{

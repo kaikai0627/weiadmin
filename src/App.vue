@@ -4,19 +4,10 @@
     </div>
 </template>
 <style>
+    @import 'https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css';
     @import "./assets/css/main.css";
     @import "./assets/css/color-dark.css";     /*深色主题*/
     /*@import "./assets/css/theme-green/color-green.css";   浅绿色主题*/
-    /* 清除莫名其妙的样式 */
-    .el-upload--text {
-        width: auto;
-        height: auto;
-    }
-    .el-popover {
-        overflow-y: auto;
-        max-height: 97%;
-    }
-
     
 ::-webkit-scrollbar-track
 {
@@ -37,5 +28,13 @@
     border-radius: 5px;
     background: rgba(0,0,0,.25);
     transition: color .2s ease;
+}
+.my-footer {
+    position: absolute;
+    bottom: 0;
+    width:100%;
+    left:0;
+    height: 60px;
+    padding: 0 20px;
 }
 </style>

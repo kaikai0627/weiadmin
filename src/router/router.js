@@ -6,14 +6,60 @@ let routes = [{
     {
         path: '/',
         component: () =>
-            import ('@/views/home/index.vue'),
+            import ('@/views/layout/index.vue'),
         meta: { title: '自述文件' },
         children: [{
                 path: '/dashboard',
+                name: 'dashboard',
                 component: () =>
-                    import ('@/views/dashboard/Dashboard.vue'),
+                    import ('@/views/home/dashboard/Dashboard.vue'),
                 meta: { title: '系统首页' }
             },
+            {
+                path: '/messageshow',
+                component: () =>
+                    import ('@/views/home/message/Message.vue'),
+                meta: { title: '提醒消息' }
+            },
+            {
+                path: 'template_page_index',
+                name: 'template_page_index',
+                component: () =>
+                    import ('@/views/template/page/index'),
+                meta: { title: '页面管理', access: ['template:page:list'] }
+            },
+            {
+                path: 'template_page_add',
+                name: 'template_page_add',
+                component: () =>
+                    import ('@/views/template/page/components/add.vue'),
+                meta: { title: '添加模板' }
+            },
+            {
+                path: 'template_page_update/:pageId',
+                name: 'template_page_update',
+                component: () =>
+                    import ('@/views/template/page/components/update.vue'),
+                meta: { title: '修改模板', access: ['template:page:update'] }
+            },
+            {
+                path: '/product_wtype',
+                name: 'product_wtype',
+                component: () =>
+                    import ('@/views/product/wtype/index'),
+                meta: { title: '商城类别管理', access: ['product:wtype:list'] }
+            },
+            {
+                path: '/system_user',
+                name: 'system_user',
+                component: () =>
+                    import ('@/views/system/user/index'),
+                meta: { title: '用户管理', access: ['system:user:list'] }
+            },
+            //{ path: 'person-stalker',meta:{title: '角色管理',}, name: 'system_role', component: () => import('@/views/system/role') },
+            //{ path: 'dict',meta:{title: '用户字典',access: ['system:dict:list']}, name: 'system_dict', component: () => import('@/views/system/dict') },
+            // { path: 'resource',meta:{title: '资源管理',access: ['system:resource:list']}, name: 'system_resource', component: () => import('@/views/system/resource') },
+            //{ path: 'log',meta:{title: '系统日志',access: ['system:log:list']}, name: 'system_log', component: () => import('@/views/system/log') },
             {
                 path: '/shopgoodslist',
                 component: () =>
@@ -25,30 +71,6 @@ let routes = [{
                 component: () =>
                     import ('@/views/demo/basetable/BaseTable.vue'),
                 meta: { title: '表格演示' }
-            },
-            {
-                path: '/messageshow',
-                component: () =>
-                    import ('@/views/message/Message.vue'),
-                meta: { title: '提醒消息' }
-            },
-            {
-                path: '/templateset',
-                component: () =>
-                    import ('@/views/template/set.vue'),
-                meta: { title: '模板设置' }
-            },
-            {
-                path: '/test',
-                component: () =>
-                    import ('@/views/template/test.vue'),
-                meta: { title: '测试' }
-            },
-            {
-                path: '/test2',
-                component: () =>
-                    import ('@/views/template/test2.vue'),
-                meta: { title: '测试2' }
             },
             {
                 path: '/404',
@@ -71,10 +93,10 @@ let routes = [{
             import ('@/views/login/Login.vue'),
         meta: { title: '登录' }
     },
-    {
-        path: '*',
-        redirect: '/404'
-    }
+    // {
+    // path: '*',
+    // redirect: '/404'
+    // }
 ]
 
 //*** 以下为自动路由, 暂时屏蔽 */

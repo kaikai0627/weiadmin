@@ -42,7 +42,7 @@ axiosInstance.interceptors.response.use(res => {
    */
   // 状态码小于0属于异常情况
   if(res.headers['content-type']==="application/json;charset=UTF-8"){
-    console.info('return json')
+    //console.info(res)
     if (res.data.status < 0) {
       console.log('http调用成功,但处理失败,返回:');
       console.log(res);
@@ -80,12 +80,12 @@ export const patch = (url, params, pathVariable = null) => axiosInstance.patch(b
 
 export const del = (url, params, pathVariable = null) => axiosInstance.delete(baseRequestUrl+sf(url, pathVariable), { params: params })
 
-export const uploadFile = (files, mediaType) => {
-  let file = files.target.files[0];
+export const uploadFile = (uploadFileRawData, mediaType) => {
+  let file = uploadFileRawData;//uploadFileRawData.target.files[0];
   console.info("准备上传文件")
   console.info(file);
   let param = new FormData(); //创建form对象
-  param.append('uploadfile',file);//通过append向form对象添加数据
+  param.append('uploadfile',uploadFileRawData);//通过append向form对象添加数据
   //console.log(param.get('file')); //FormData私有类对象，访问不到，可以通过get判断值是否传进去
   let config = {
     headers:{'Content-Type':'multipart/form-data'} //这里是重点，需要和后台沟通好请求头，Content-Type不一定是这个值

@@ -1,5 +1,5 @@
 module.exports = {
-  // publicPath: '/weiadm/'
+   publicPath: '/io/weiadmi/',
    // baseUrl: './',
     assetsDir: 'static',
     productionSourceMap: false,

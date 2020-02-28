@@ -14,6 +14,8 @@ const CS_STORELAST_LOGIN_NAME = 'lastloginname'
 const CS_STORELAST_USERINFO = 'userinfo'
 
 const setToken = (token) => {
+  console.info("tokenchanged=");
+  console.info(token);
   //Cookies.set(TOKEN_KEY, token, {expires: config.cookieExpires || 1})
   sessionStorage.setItem(CS_STORE_TOKEN_KEY, token);
 }
