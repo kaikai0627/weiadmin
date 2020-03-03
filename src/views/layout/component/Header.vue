@@ -47,7 +47,8 @@
     </div>
 </template>
 <script>
-import bus from '../../../common/bus/bus';
+import bus from '../../../common/bus/bus'
+import store from '@/common/utils/store-kit.js'
 export default {
     data() {
         return {
@@ -67,8 +68,8 @@ export default {
         // 用户名下拉菜单选择事件
         handleCommand(command) {
             if (command == 'loginout') {
-                localStorage.removeItem('ms_username');
-                this.$router.push('/login');
+                store.clearLoginFlag()
+                this.$router.push({name:'Login'})
             }
         },
         // 侧边栏折叠

@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="child-main">
         <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item>
@@ -7,7 +7,7 @@
                 </el-breadcrumb-item>
             </el-breadcrumb>
         </div>
-        <div ref="contentHeight">
+        <div ref="contentHeight" class="child-main">
             <el-card class="box-card">
                 <div ref="topHeight">
                     <div class="handle-box">

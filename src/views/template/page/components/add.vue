@@ -165,7 +165,7 @@
                                                     >
                                                         <el-row
                                                             class="d-flex align-items-center" style="position: relative"
-                                                            v-for="(img,i) in item.contents[0].data1" :key="i"
+                                                            v-for="(bannerItem,i) in item.contents" :key="i"
                                                         >
                                                             <el-col
                                                                 :span="6"
@@ -176,7 +176,7 @@
                                                                     class="img-preview"
                                                                 >
                                                                     <img
-                                                                        :src="img"
+                                                                        :src="bannerItem.data1"
                                                                         class="avatar border"
                                                                     />
                                                                     <label class="replace-img">
@@ -190,27 +190,46 @@
                                                                 </div>
                                                             </el-col>
                                                             <el-col :span="18">
-                                                                跳转路径：
-                                                                <el-select
-                                                                    v-model="
-                                                                        item.contents[0].value[i]
-                                                                    "
-                                                                    placeholder="请选择"
-                                                                >
-                                                                    <el-option
-                                                                        v-for="item in item.contents[0].navurl"
-                                                                        :key="
-                                                                            item.value
+                                                                <div>
+                                                                    跳转路径：
+                                                                    <el-select
+                                                                        v-model="
+                                                                            bannerItem.value
                                                                         "
-                                                                        :label="
-                                                                            item.label
-                                                                        "
-                                                                        :value="
-                                                                            item.value
-                                                                        "
+                                                                        placeholder="请选择"
                                                                     >
-                                                                    </el-option>
-                                                                </el-select>
+                                                                        <el-option
+                                                                            v-for="item in bannerItem.action"
+                                                                            :key="
+                                                                                item.value
+                                                                            "
+                                                                            :label="
+                                                                                item.label
+                                                                            "
+                                                                            :value="
+                                                                                item.value
+                                                                            "
+                                                                        >
+                                                                        </el-option>
+                                                                    </el-select>
+                                                                </div>
+                                                                <!-- bannerItem.value == 0代表模板页 1代表详情 -->
+                                                                <div class="mt-2" v-if="bannerItem.value == 0">
+                                                                    模板路径：
+                                                                    <el-input v-model="bannerItem.navurl" 
+                                                                        class="d-inline-block" 
+                                                                        style="width: 220px"
+                                                                    >
+                                                                    </el-input>
+                                                                </div>
+                                                                <div class="mt-2" v-else-if="bannerItem.value == 1">
+                                                                    商品编号：
+                                                                    <el-input v-model="bannerItem.navparam" 
+                                                                        class="d-inline-block" 
+                                                                        style="width: 220px"
+                                                                    >
+                                                                    </el-input>
+                                                                </div>
                                                             </el-col>
                                                         </el-row>
                                                     </el-card>
@@ -249,7 +268,7 @@
                                                     <el-col :span="21">
                                                         <el-input
                                                             size="small"
-                                                            v-model="item.contents[0].link"
+                                                            v-model="item.link"
                                                         ></el-input>
                                                     </el-col>
                                                 </el-row>
@@ -286,14 +305,14 @@
                                         trigger="click"
                                         arrow="never"
                                         height="150px"
-                                        v-if="item.contents[0].data1.length > 0"
+                                        v-if="item.contents.length > 0"
                                     >
                                         <el-carousel-item
-                                            v-for="item in item.contents[0].data1"
-                                            :key="item"
+                                            v-for="(item,s) in item.contents"
+                                            :key="s"
                                         >
                                             <img
-                                                :src="item"
+                                                :src="item.data1"
                                                 alt=""
                                                 class="banner-img"
                                             />
@@ -317,7 +336,7 @@
                                 </div>
                                 <div v-else>
                                     <video
-                                        :src="item.contents[0].link"
+                                        :src="item.link"
                                         width="100%"
                                         height="150px"
                                         controls
@@ -392,7 +411,7 @@
                                                 shadow="never"
                                                 class="text-center mb-2 p-2"
                                             >
-                                                <template v-for="(img,i) in item.contents[0].data1">
+                                                <template v-for="(navItem,i) in item.contents">
                                                     <el-row
                                                         class="d-flex align-items-center"
                                                         :key="i" style="position: relative"
@@ -401,12 +420,12 @@
                                                             :span="6"
                                                             class="mb-2 mt-2"
                                                         >
-                                                            <i class="el-icon-error banner-del" @click="tapDelNav(index,i)"></i>
+                                                            <i class="el-icon-error banner-del" @click="tapDelBanner(index,i)"></i>
                                                             <div
                                                                 class="img-preview"
                                                             >
                                                                 <img
-                                                                    :src="img"
+                                                                    :src="navItem.data1"
                                                                     class="avatar border"
                                                                 />
                                                                 <label class="replace-img">
@@ -421,15 +440,23 @@
                                                         </el-col>
                                                         <el-col :span="18">
                                                             <div>
+                                                                导航名称：
+                                                                <el-input v-model="navItem.data2" 
+                                                                    class="d-inline-block" 
+                                                                    style="width: 220px"
+                                                                >
+                                                                </el-input>
+                                                            </div>
+                                                            <div class="mt-2">
                                                                 跳转路径：
                                                                 <el-select
                                                                     v-model="
-                                                                        item.contents[0].value[i]
+                                                                        navItem.value
                                                                     "
                                                                     placeholder="请选择"
                                                                 >
                                                                     <el-option
-                                                                        v-for="item in item.contents[0].navurl"
+                                                                        v-for="item in navItem.action"
                                                                         :key="
                                                                             item.value
                                                                         "
@@ -443,9 +470,18 @@
                                                                     </el-option>
                                                                 </el-select>
                                                             </div>
-                                                            <div class="mt-2">
-                                                                导航名称：
-                                                                <el-input v-model="item.contents[0].data2[i]" 
+                                                            <!-- navItem.value == 0代表模板页 1代表详情 -->
+                                                            <div class="mt-2" v-if="navItem.value == 0">
+                                                                模板路径：
+                                                                <el-input v-model="navItem.navurl" 
+                                                                    class="d-inline-block" 
+                                                                    style="width: 220px"
+                                                                >
+                                                                </el-input>
+                                                            </div>
+                                                            <div class="mt-2" v-else-if="navItem.value == 1">
+                                                                商品编号：
+                                                                <el-input v-model="navItem.navparam" 
                                                                     class="d-inline-block" 
                                                                     style="width: 220px"
                                                                 >
@@ -521,10 +557,23 @@
                                             v-for="j in 8"
                                             :key="j"
                                         >
-                                            <img
-                                                :src="item.contents[0].data1[j-1] || require('../../../../assets/images/default.png')"
+                                            <!-- 导航图片 -->
+                                            <img v-if="item.contents[j-1]"
+                                                :src="item.contents[j-1].data1"
                                             />
-                                            <span>{{item.contents[0].data2[j-1] || '图文导航'}}</span>
+                                            <img v-else
+                                                src="../../../../assets/images/default.png"
+                                            />
+                                            <!-- 导航文字 -->
+                                            <span v-if="item.contents[j-1]">
+                                                <template v-if="item.contents[j-1].data2 ==''">
+                                                    图文导航
+                                                </template>
+                                                <template v-else>
+                                                    {{item.contents[j-1].data2}}
+                                                </template>
+                                            </span>
+                                            <span v-else>图文导航</span>
                                         </div>
                                     </el-carousel-item>
                                 </el-carousel>
@@ -1278,26 +1327,39 @@ export default {
         },
         // 图片上传 => 图文广告 & 导航菜单
         async upLoadImg(event,id,tag,serial) {
-            // id记录图片数组的下标 serial记录广告图片在moduleList的位置
+            // id记录图片所在数组的下标 serial记录广告图片在moduleList的位置
             let res = await uploadFile(event.target.files[0],'img')
             if(tag == 'add') {
                 // 添加图片
-                this.moduleList[serial].contents[0].data1.push(res.data)
+                // this.moduleList[serial].contents[0].data1.push(res.data)
+                this.moduleList[serial].contents.push({
+                    data1: res.data,
+                    data2: '',
+                    action: [
+                        {
+                            value: "0",
+                            label: "模板页"
+                        },
+                        {
+                            value: "1",
+                            label: "详情页"
+                        }
+                    ],
+                    value: '0', // 当前下拉框选择的值
+                    navurl: '',
+                    navparam: ''
+                })
             } else if(tag == 'update') {
                 // 修改图片
-                this.moduleList[serial].contents[0].data1.splice(id,1,res.data)
+                // this.moduleList[serial].contents[0].data1.splice(id,1,res.data)
+                this.moduleList[serial].contents.id.data1 = res.data
             }else {
                 return
             }
         },
-        // 删除上传的图文广告
+        // 删除上传的图文广告 && 删除上传的图文导航
         tapDelBanner(index,id) {
-            this.moduleList[index].contents[0].data1.splice(id,1)
-        },
-        // 删除上传的图文导航
-        tapDelNav(index,id) {
-            this.moduleList[index].contents[0].data1.splice(id,1)
-            this.moduleList[index].contents[0].data2.splice(id,1)
+            this.moduleList[index].contents.splice(id,1)
         },
         // 广告图片选择模板类型
         selectTemplate(index, tag) {
@@ -1310,23 +1372,8 @@ export default {
                 this.moduleList.push({
                     controlName: "ImageAd",
                     bannerType: "1",
-                    contents: [
-                        {
-                            data1: [],
-                            navurl: [
-                                {
-                                    value: "0",
-                                    label: "模板页"
-                                },
-                                {
-                                    value: "1",
-                                    label: "详情页"
-                                }
-                            ],
-                            value: [],
-                            link: "http://47.104.236.24:8089/jademp4/jade.mp4"
-                        }
-                    ]
+                    contents: [],
+                    link: "http://47.104.236.24:8089/jademp4/jade.mp4"
                 });
             } else if (tag == 2) {
                 this.moduleList.push({
@@ -1334,23 +1381,7 @@ export default {
                     marginLeftRight: 0,
                     marginTop: 10,
                     background: "#ffffff",
-                    contents: [
-                        {
-                            data1: [],
-                            data2: [],
-                            navurl: [
-                                {
-                                    value: "0",
-                                    label: "模板页"
-                                },
-                                {
-                                    value: "1",
-                                    label: "详情页"
-                                }
-                            ],         
-                            value: []
-                        }
-                    ]
+                    contents: []
                 });
             } else if (tag == 3) {
                 this.moduleList.push({
@@ -1384,6 +1415,7 @@ export default {
             } else {
                 return;
             }
+            console.log(this.moduleList)
             this.$message({
                 type: "success",
                 message: "添加成功!"

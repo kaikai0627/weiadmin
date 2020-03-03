@@ -33,7 +33,7 @@ export default {
     data: function() {
         return {
             param: {
-                username: '00001',
+                username: '',
                 password: '',
             },
             rules: {
@@ -49,7 +49,7 @@ export default {
         };
     },
     created: function () {
-        this.loginForm.username = storekit.getLastLoginName();    
+        this.param.username = storekit.getLastLoginName();    
     },
     methods: {
         submitForm() {

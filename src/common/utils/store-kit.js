@@ -14,64 +14,62 @@ const CS_STORELAST_LOGIN_NAME = 'lastloginname'
 const CS_STORELAST_USERINFO = 'userinfo'
 
 const setToken = (token) => {
-  console.info("tokenchanged=");
-  console.info(token);
-  //Cookies.set(TOKEN_KEY, token, {expires: config.cookieExpires || 1})
-  sessionStorage.setItem(CS_STORE_TOKEN_KEY, token);
+    console.info("tokenchanged=");
+    console.info(token);
+    //Cookies.set(TOKEN_KEY, token, {expires: config.cookieExpires || 1})
+    sessionStorage.setItem(CS_STORE_TOKEN_KEY, token);
 }
 
 const getToken = () => {
-  //const token = Cookies.get(TOKEN_KEY)
-  const token = sessionStorage.getItem(CS_STORE_TOKEN_KEY)
-  if (token) return token
-  else return false
+    //const token = Cookies.get(TOKEN_KEY)
+    const token = sessionStorage.getItem(CS_STORE_TOKEN_KEY)
+    if (token) return token
+    else return false
 }
 
 const getLastLoginName = () => {
-  //const lastloginname = Cookies.get(COOKIE_LAST_LOGIN_NAME)
-  const lastloginname = localStorage.getItem(CS_STORELAST_LOGIN_NAME)
-  if (lastloginname) return lastloginname
-  else return ''
+    //const lastloginname = Cookies.get(COOKIE_LAST_LOGIN_NAME)
+    const lastloginname = localStorage.getItem(CS_STORELAST_LOGIN_NAME)
+    if (lastloginname) return lastloginname
+    else return ''
 }
 
 const setLastLoginName = (lastloginname) => {
-  //Cookies.set(COOKIE_LAST_LOGIN_NAME, lastloginname)
-  localStorage.setItem(CS_STORELAST_LOGIN_NAME, lastloginname)
-  return true
+    //Cookies.set(COOKIE_LAST_LOGIN_NAME, lastloginname)
+    localStorage.setItem(CS_STORELAST_LOGIN_NAME, lastloginname)
+    return true
 }
 
 const setUserInfo = (user) => {
-  //Cookies.set(TOKEN_KEY, token, {expires: config.cookieExpires || 1})
-  if(user){
-    sessionStorage.setItem(CS_STORELAST_USERINFO, JSON.stringify(user));
-  }else{
-    sessionStorage.removeItem()
-  }
+    //Cookies.set(TOKEN_KEY, token, {expires: config.cookieExpires || 1})
+    if (user) {
+        sessionStorage.setItem(CS_STORELAST_USERINFO, JSON.stringify(user));
+    } else {
+        sessionStorage.removeItem()
+    }
 }
 
 const getUserInfo = () => {
-  //const token = Cookies.get(TOKEN_KEY)
-  const str = sessionStorage.getItem(CS_STORELAST_USERINFO)
-  if (str) {
-    return JSON.parse(str)
-  }
-  else return false
+    //const token = Cookies.get(TOKEN_KEY)
+    const str = sessionStorage.getItem(CS_STORELAST_USERINFO)
+    if (str) {
+        return JSON.parse(str)
+    } else return false
 }
 
 const clearLoginFlag = () => {
-  //const token = Cookies.get(TOKEN_KEY)
-  sessionStorage.removeItem(CS_STORE_TOKEN_KEY)
-  sessionStorage.removeItem(CS_STORELAST_USERINFO)
+    //const token = Cookies.get(TOKEN_KEY)
+    sessionStorage.removeItem(CS_STORE_TOKEN_KEY)
+    sessionStorage.removeItem(CS_STORELAST_USERINFO)
 }
 
 export default {
-  setToken,
-  getToken,
-  getLastLoginName,
-  setLastLoginName,
-  setUserInfo,
-  getUserInfo,
-  clearLoginFlag
+    setToken,
+    getToken,
+    getLastLoginName,
+    setLastLoginName,
+    setUserInfo,
+    getUserInfo,
+    clearLoginFlag
 
 }
-
